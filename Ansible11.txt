@@ -32,6 +32,11 @@ Here's a brief overview of how the hosts file works in Ansible:
    [db_servers]
    db1.example.com
    db2.example.com
+   we can also write this 
+   [servers]
+   34.228.157.73 ansible_user=root ansible_password=rootroot
+   54.235.5.85 ansible_user=root ansible_password=rootroot
+
    ```
 
    In this example, there are two groups: `web_servers` and `db_servers`. Each group contains a list of server hostnames.
