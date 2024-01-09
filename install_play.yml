@@ -1,4 +1,6 @@
 ---
+#  This playbook file will setup Apache2 with all required models, Update servers, Installation PHP and all it's required modules,
+#  composer for php, Nodejs with 18 version, pm2 packages, mysql server and create user and password, installation of phpmyadmin.
 - name: DevOps Setup
   hosts: servers
   become: yes
