@@ -1,0 +1,101 @@
+---
+- name: DevOps Setup
+  hosts: servers
+  become: yes
+
+  tasks:
+    - name: Update servers
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Install Apache and required modules
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - apache2
+        - libxml2-dev
+        - libapr1-dev
+        - libaprutil1-dev
+      become: yes
+
+    - name: Enable Apache modules
+      command: a2enmod {{ item }}
+      loop:
+        - proxy
+        - proxy_http
+        - proxy_html
+        - proxy_wstunnel
+        - rewrite
+      become: yes
+
+    - name: Update Apache Configuration
+      blockinfile:
+        path: /etc/apache2/apache2.conf
+        block: |
+          <Directory /var/www/html>
+              Options Indexes FollowSymLinks
+              AllowOverride All
+              Require all granted
+          </Directory>
+      become: yes
+
+    - name: Restart Apache
+      service:
+        name: apache2
+        state: restarted
+      become: yes
+
+    - name: Install PHP and Composer
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - php
+        - php-cli
+        - php-mbstring
+        - php-dom
+        - php-mysql
+        - php-zip
+        - php-gd
+        - php-xml
+        - php-curl
+        - composer
+      become: yes
+
+    - name: Add Composer's global bin directory to PATH
+      lineinfile:
+        path: ~/.bashrc
+        line: 'export PATH="$PATH:$HOME/.composer/vendor/bin"'
+      become: yes
+
+    - name: Source bashrc to apply changes
+      command: bash -c "source ~/.bashrc"
+      become: yes
+
+    - name: Install Node.js 18
+      become: yes
+      shell: |
+        curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+        sudo apt-get install -y nodejs
+
+    - name: Install pm2 globally
+      become: yes
+      shell: npm install -g pm2
+    - name: Upload phpmyadmin.sh script
+      copy:
+        src: /home/ansible/phpmyadmin.sh
+        dest: /home/phpmyadmin.sh
+        mode: 0777
+      become: yes
+
+    - name: Execute phpmyadmin.sh script
+      command: sh /home/phpmyadmin.sh
+      become: yes
+
+    - name: Restart Apache
+      service:
+        name: apache2
+        state: restarted
+      become: yes
