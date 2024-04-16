@@ -14,7 +14,7 @@ Roles: Roles are reusable units of playbooks. They encapsulate related tasks,
      handlers, variables, and files into a directory structure.
 To Install Ansible on our Ubuntu server we need to install some additional packages on server 
 
-            sudo apt-addrepository ppa:ansible/ansible
+            sudo apt-add-repository ppa:ansible/ansible
             sudo apt update
 	sudo apt install ansible
 
